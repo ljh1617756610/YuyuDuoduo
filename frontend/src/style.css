@@ -1,0 +1,74 @@
+:root {
+  --gold: #e8c98e;
+  --gold-soft: #f3e6c8;
+  --bg-0: #0e0c0a;
+  --bg-1: #1a1512;
+  --text: #f3e6c8;
+  --muted: rgba(243, 230, 200, 0.6);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Microsoft YaHei", "Songti SC", serif;
+  color: var(--text);
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(232, 201, 142, 0.12), transparent 60%),
+    radial-gradient(900px 700px at 80% 110%, rgba(255, 155, 176, 0.08), transparent 55%),
+    linear-gradient(160deg, var(--bg-1) 0%, var(--bg-0) 55%, #070605 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+a {
+  color: var(--gold);
+  text-decoration: none;
+}
+
+/* ===== 滚动渐入（深入显现）===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(42px) scale(0.975);
+  filter: blur(7px);
+  transition: opacity 0.95s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.95s cubic-bezier(0.22, 0.61, 0.36, 1),
+    filter 0.95s ease;
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform, filter;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
+/* 仅淡入变体：用于地图等不宜位移/缩放的容器，保护 echarts 尺寸计算 */
+.reveal-soft {
+  opacity: 0;
+  transition: opacity 1.1s ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal-soft.is-visible {
+  opacity: 1;
+}
+/* 尊重「减少动态效果」的系统偏好，直接显示 */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-soft {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+}
