@@ -51,6 +51,7 @@ export const cities = [
         { src: '/static/photos/shanghai/aquarium/photo-04.jpg', caption: '' },
         { src: '/static/photos/shanghai/aquarium/photo-05.jpg', caption: '' },
         { src: '/static/photos/shanghai/aquarium/photo-06.jpg', caption: '' },
+        { src: '/static/photos/shanghai/aquarium/photo-07.jpg', caption: '' },
       ] },
       { slug: 'disney', name: 'Disney', photos: [] },
     ],
