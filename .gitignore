@@ -17,3 +17,10 @@ db.sqlite3-journal
 
 # 日志
 *.log
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
