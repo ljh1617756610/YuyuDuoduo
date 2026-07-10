@@ -14,7 +14,7 @@ const hearts = Array.from({ length: COUNT }, (_, i) => ({
   duration: rand(30, 56),      // 上浮一轮时长 s（更慢）
   delay: rand(-50, 0),         // 负延迟让首屏就已分布在各高度
   blur: rand(5, 12),           // 模糊 px（更模糊）
-  opacity: rand(0.12, 0.4),    // 最大不透明度
+  opacity: rand(0.2, 0.52),    // 最大不透明度
   drift: rand(-40, 40),        // 水平漂移幅度 px
   hue: Math.random() > 0.5 ? '#ff9fc4' : '#ffb8d6', // 两种粉
 }))
@@ -45,7 +45,7 @@ const hearts = Array.from({ length: COUNT }, (_, i) => ({
 .hearts-layer {
   position: fixed;
   inset: 0;
-  z-index: -1;           /* 在光效背景之上、内容之下 */
+  z-index: 0;            /* 在 body 背景之上、页面内容之下 */
   pointer-events: none;
   overflow: hidden;
 }

@@ -102,6 +102,8 @@ function triggerEgg() {
 
 <style scoped>
 .site {
+  position: relative;
+  z-index: 1;
   max-width: 1080px;
   margin: 0 auto;
   padding: 70px 56px 48px;
