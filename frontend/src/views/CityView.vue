@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { cities } from '../data/cities.js'
 import PhotoCarousel from '../components/PhotoCarousel.vue'
+import FloatingHearts from '../components/FloatingHearts.vue'
 
 const route = useRoute()
 const city = computed(
@@ -21,6 +22,7 @@ function wallFor(target) {
 </script>
 
 <template>
+  <FloatingHearts />
   <section class="city-page">
     <div class="city-head">
       <h2 class="city-title" v-reveal>{{ city.name }}</h2>

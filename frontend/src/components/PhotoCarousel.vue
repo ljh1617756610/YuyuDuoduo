@@ -21,6 +21,7 @@ const wall = computed(() => {
 
 // 轮播：一次看一张，自动滚动，两侧箭头切换，竖版 3:4
 const current = ref(0)
+const dir = ref('next') // 切换方向，用于决定进出场动画方向
 const paused = ref(false)
 const AUTOPLAY = 0 // 0 = 关闭自动播放；改成毫秒数（如 4500）即可恢复自动轮播
 let timer = null
@@ -33,12 +34,15 @@ const nextIndex = computed(() => (current.value + 1) % total.value)
 const prevItem = computed(() => wall.value[prevIndex.value])
 const nextItem = computed(() => wall.value[nextIndex.value])
 
-function go(n) {
+function go(n, direction) {
   const len = total.value
-  current.value = ((n % len) + len) % len
+  const target = ((n % len) + len) % len
+  if (target === current.value) return
+  dir.value = direction || (target > current.value ? 'next' : 'prev')
+  current.value = target
 }
-const next = () => go(current.value + 1)
-const prev = () => go(current.value - 1)
+const next = () => go(current.value + 1, 'next')
+const prev = () => go(current.value - 1, 'prev')
 
 function start() {
   stop()
@@ -98,7 +102,7 @@ onUnmounted(stop)
         </svg>
       </div>
       <div class="slide">
-        <Transition name="photo">
+        <Transition :name="'photo-' + dir">
           <img
             v-if="cur.src"
             :key="current"
@@ -176,6 +180,9 @@ onUnmounted(stop)
   background: rgba(20, 16, 12, 0.5);
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5),
     inset 0 0 40px rgba(232, 201, 142, 0.06);
+  /* 景深透视：让切换时的 rotateY / scale 呈现 3D 纵深 */
+  perspective: 1400px;
+  perspective-origin: center center;
 }
 .slide-img {
   position: absolute;
@@ -184,6 +191,8 @@ onUnmounted(stop)
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform-origin: center center;
+  backface-visibility: hidden;
 }
 .slide-placeholder {
   display: flex;
@@ -226,24 +235,26 @@ onUnmounted(stop)
 .peek {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%) scale(0.98);
+  transform: translateY(-50%) scale(0.9);
   width: clamp(130px, 20vw, 240px);
   aspect-ratio: v-bind(ratio);
   border-radius: 14px;
   overflow: hidden;
   border: 1px solid rgba(232, 201, 142, 0.2);
   background: rgba(20, 16, 12, 0.5);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  filter: blur(5px) brightness(0.8);
-  opacity: 0.5;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.45);
+  filter: blur(7px) brightness(0.68);
+  opacity: 0.42;
   z-index: 1;
   cursor: pointer;
-  transition: opacity 0.35s ease, transform 0.35s ease, filter 0.35s ease;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .peek:hover {
-  opacity: 0.78;
-  filter: blur(2px) brightness(0.92);
-  transform: translateY(-50%) scale(1.03);
+  opacity: 0.85;
+  filter: blur(1.5px) brightness(0.95);
+  transform: translateY(-50%) scale(1.02);
 }
 .peek-prev {
   right: 100%;
@@ -274,28 +285,49 @@ onUnmounted(stop)
   );
 }
 
-/* ===== 切换照片的丝滑动画（淡入 + 轻微缩放 crossfade）===== */
-.photo-enter-active,
-.photo-leave-active {
-  transition: opacity 0.6s ease,
-    transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+/* ===== 切换照片的丝滑动画（带方向感的滑动 + 缩放 + 景深模糊）===== */
+/* 进/出同时进行的 crossfade，用 ease-out expo 曲线极顺滑；进场从远处带模糊「浮近」，
+   出场向反方向「退远」并模糊，营造景深纵深感。 */
+.photo-next-enter-active,
+.photo-next-leave-active,
+.photo-prev-enter-active,
+.photo-prev-leave-active {
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity, filter;
 }
-.photo-enter-from {
+/* 下一张：新图从右侧远处浮近，旧图向左退远 */
+.photo-next-enter-from {
   opacity: 0;
-  transform: scale(1.05);
+  transform: translateX(9%) scale(1.12) rotateY(-6deg);
+  filter: blur(12px);
 }
-.photo-leave-to {
+.photo-next-leave-to {
   opacity: 0;
-  transform: scale(0.95);
+  transform: translateX(-7%) scale(0.9) rotateY(5deg);
+  filter: blur(9px);
+}
+/* 上一张：新图从左侧远处浮近，旧图向右退远 */
+.photo-prev-enter-from {
+  opacity: 0;
+  transform: translateX(-9%) scale(1.12) rotateY(6deg);
+  filter: blur(12px);
+}
+.photo-prev-leave-to {
+  opacity: 0;
+  transform: translateX(7%) scale(0.9) rotateY(-5deg);
+  filter: blur(9px);
 }
 
 .peek-enter-active,
 .peek-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity 0.6s ease, filter 0.6s ease;
 }
 .peek-enter-from,
 .peek-leave-to {
   opacity: 0;
+  filter: blur(12px);
 }
 
 /* ===== 左右箭头（主题金 + 发光）===== */
@@ -371,6 +403,23 @@ onUnmounted(stop)
 @media (max-width: 720px) {
   .peek {
     display: none;
+  }
+}
+
+/* 无障碍：减少动态偏好时关闭夸张位移/旋转，仅保留淡入 */
+@media (prefers-reduced-motion: reduce) {
+  .photo-next-enter-active,
+  .photo-next-leave-active,
+  .photo-prev-enter-active,
+  .photo-prev-leave-active {
+    transition: opacity 0.4s ease;
+  }
+  .photo-next-enter-from,
+  .photo-prev-enter-from,
+  .photo-next-leave-to,
+  .photo-prev-leave-to {
+    transform: none;
+    filter: none;
   }
 }
 
