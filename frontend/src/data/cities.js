@@ -38,6 +38,11 @@ export const cities = [
         { src: '/static/photos/shanghai/shanghai-university/photo-18.jpg', caption: '' },
         { src: '/static/photos/shanghai/shanghai-university/photo-19.jpg', caption: '' },
         { src: '/static/photos/shanghai/shanghai-university/photo-20.jpg', caption: '' },
+        { src: '/static/photos/shanghai/shanghai-university/photo-21.jpg', caption: '' },
+        { src: '/static/photos/shanghai/shanghai-university/photo-22.jpg', caption: '' },
+        { src: '/static/photos/shanghai/shanghai-university/photo-23.jpg', caption: '' },
+        { src: '/static/photos/shanghai/shanghai-university/photo-24.jpg', caption: '' },
+        { src: '/static/photos/shanghai/shanghai-university/photo-25.jpg', caption: '' },
       ] },
       { slug: 'aquarium', name: '水族馆', photos: [
         { src: '/static/photos/shanghai/aquarium/photo-01.jpg', caption: '' },
