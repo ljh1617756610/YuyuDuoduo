@@ -109,6 +109,8 @@ export const cities = [
         { src: '/static/photos/lijiang/old-town/photo-15.jpg', caption: '' },
         { src: '/static/photos/lijiang/old-town/photo-16.jpg', caption: '' },
         { src: '/static/photos/lijiang/old-town/photo-17.jpg', caption: '' },
+        { src: '/static/photos/lijiang/old-town/photo-18.jpg', caption: '' },
+        { src: '/static/photos/lijiang/old-town/photo-19.jpg', caption: '' },
       ] },
     ],
   },
